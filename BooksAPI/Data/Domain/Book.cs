@@ -1,15 +1,15 @@
-namespace BooksAPI
+﻿namespace BooksAPI.Data.Domain
 {
     public class Book
     {
-        public Book (Guid id, string author, string title, double price)
+        public Book(int id, string author, string title, double price)
         {
-            Id = id;    
+            Id = id;
             Author = author;
             Title = title;
             Price = price;
         }
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public string Author { get; set; }
 
