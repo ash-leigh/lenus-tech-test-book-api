@@ -11,12 +11,14 @@ builder.Services.AddControllers();
 builder.Services.AddSqlite<ApplicationDbContext>("Data Source=Books.db");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Books"));
+builder.Services.AddMediatR(typeof(Program).Assembly);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddMediatR(typeof(Program).Assembly);
+builder.Services.AddSwaggerGen(options =>
+{
+    options.CustomSchemaIds(type => type.ToString());
+});
 
 var app = builder.Build();
 

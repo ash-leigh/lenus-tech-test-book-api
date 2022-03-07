@@ -3,6 +3,8 @@
     using BooksAPI.Data;
     using BooksAPI.Data.Domain;
     using MediatR;
+    using System.ComponentModel.DataAnnotations;
+
     public class CreateBook
     {
         public class Command : IRequest<Response>
@@ -14,10 +16,13 @@
                 Price = price;
             }
 
+            [Required]
             public string Author { get; set; }
 
+            [Required]
             public string Title { get; set; }
 
+            [Required]
             public double Price { get; set; }
         }
 
