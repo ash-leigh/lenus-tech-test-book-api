@@ -5,10 +5,9 @@
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.Data.Sqlite;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Infrastructure;
-    using Microsoft.EntityFrameworkCore.Storage;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using System.Threading.Tasks;
 
     public abstract class ApiControllerTestsBase : WebApplicationFactory<Program>
     {
@@ -18,8 +17,13 @@
         {
             connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
+        }
 
-            EnsureDatabase();
+        public async Task<ApplicationDbContext> CreateDatabase()
+        {
+            var db = new ApplicationDbContext(DbContextOptions());
+            await db.Database.EnsureCreatedAsync();
+            return db;
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
@@ -34,16 +38,6 @@
             {
                 ConfigureDatabase(services);
             });
-        }
-
-        protected void EnsureDatabase()
-        {
-            using (var context = new ApplicationDbContext(DbContextOptions()))
-            {
-                var creator = (RelationalDatabaseCreator)context.Database.GetService<IDatabaseCreator>();
-                creator.CreateTables();
-                context.Database.EnsureCreated();
-            }
         }
 
         protected void ConfigureDatabase(IServiceCollection services)
