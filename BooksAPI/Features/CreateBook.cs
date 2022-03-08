@@ -49,8 +49,8 @@
             {
                 var id = db.Set<Book>().Max(x => x.Id)+1;
                 var newBook = new Book(id, request.Author, request.Title, request.Price);
-                await db.AddAsync(newBook);
-                await db.SaveChangesAsync();
+                await db.AddAsync(newBook, cancellationToken);
+                await db.SaveChangesAsync(cancellationToken);
 
                 return new Response(id);
             }

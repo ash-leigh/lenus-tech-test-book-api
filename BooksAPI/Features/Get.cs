@@ -34,7 +34,7 @@
                 this.db = db;
             }
 
-            public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
+            public Task<Response> Handle(Command request, CancellationToken cancellationToken)
             {
                 var query = db.Set<Book>().AsQueryable();
                 if (request.Id is object)
@@ -43,7 +43,7 @@
                 }
 
                 var books = query.ToList();
-                return new Response(books);
+                return Task.FromResult(new Response(books));
             }
         }
     }

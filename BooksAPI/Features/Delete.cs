@@ -32,7 +32,7 @@
                 if (book is object)
                 {
                     db.Remove(book);
-                    await db.SaveChangesAsync();
+                    await db.SaveChangesAsync(cancellationToken);
                     return new OkResult();
                 }
                 else

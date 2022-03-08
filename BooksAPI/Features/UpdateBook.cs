@@ -49,7 +49,7 @@
                     book.Title = request.Title;
                     book.Price = request.Price;
 
-                    await db.SaveChangesAsync();
+                    await db.SaveChangesAsync(cancellationToken);
 
                     return new OkResult();
                 }
