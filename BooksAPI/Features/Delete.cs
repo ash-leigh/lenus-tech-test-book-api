@@ -28,8 +28,8 @@
 
             public async Task<IActionResult> Handle(Command request, CancellationToken cancellationToken)
             {
-                var book = db.Set<Book>().Where(x => x.Id == request.Id);
-                if (request.Id is object)
+                var book = db.Set<Book>().Where(x => x.Id == request.Id).SingleOrDefault();
+                if (book is object)
                 {
                     db.Remove(book);
                     await db.SaveChangesAsync();

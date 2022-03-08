@@ -1,5 +1,15 @@
 ## Technical Exercise
 
+## Running API
+Open a command window in project root folder `BooksAPI\BooksAPI`
+Run `dotnet ef database update` command to create database, apply migrations and seed data
+Run `dotnet run` command
+Open browser window and navigate to `https://localhost:7229/swagger/index.html` to view the endpoints
+
+## Running Tests
+Open a command window in project root folder `BooksAPI\BookAPI.Tests
+Run `dotnet test` command
+
 ### Instructions
 
 The goal of this exercise is to implement a RESTful api that manages a collection of books in a fictional store. 

@@ -36,10 +36,10 @@
 
             public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
             {
-                var query = db.Set<Book>();
+                var query = db.Set<Book>().AsQueryable();
                 if (request.Id is object)
                 {
-                    query.Where(x => x.Id == request.Id);
+                    query = query.Where(x => x.Id == request.Id);
                 }
 
                 var books = query.ToList();

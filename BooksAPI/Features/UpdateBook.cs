@@ -4,6 +4,7 @@
     using BooksAPI.Data.Domain;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
+    using System.ComponentModel.DataAnnotations;
 
     public class UpdateBook
     {
@@ -19,10 +20,13 @@
 
             public int Id { get; set; }
 
+            [Required]
             public string Author { get; set; }
 
+            [Required]
             public string Title { get; set; }
 
+            [Required]
             public double Price { get; set; }
         }
 
@@ -45,7 +49,7 @@
                     book.Title = request.Title;
                     book.Price = request.Price;
 
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
 
                     return new OkResult();
                 }

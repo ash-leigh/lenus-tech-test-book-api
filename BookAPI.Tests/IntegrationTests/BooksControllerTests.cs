@@ -1,15 +1,12 @@
 ﻿namespace BookAPI.Tests.IntegrationTests
 {
-    using Microsoft.AspNetCore.Mvc.Testing;
-    using Microsoft.Data.Sqlite;
     using System.Net.Http;
     using System.Text;
     using System.Text.Json;
     using System.Threading.Tasks;
     using Xunit;
-    public class BooksControllerTests : WebApplicationFactory<Program>
+    public class BooksControllerTests : ApiControllerTestsBase
     {
-        private readonly SqliteConnection connection;
 
         [Fact]
         public async Task ShouldCreateBook()
@@ -26,7 +23,7 @@
             var request = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PostAsync($"/Books", request);
 
-            response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();              
         }
     }
 }
