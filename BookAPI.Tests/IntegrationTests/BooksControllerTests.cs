@@ -1,6 +1,8 @@
 ﻿namespace BookAPI.Tests.IntegrationTests
 {
+    using BooksAPI.Data;
     using BooksAPI.Data.Domain;
+    using Microsoft.Extensions.DependencyInjection;
     using System.Linq;
     using System.Net.Http;
     using System.Text;
@@ -9,18 +11,45 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class BooksControllerTests : ApiControllerTestsBase
+    public class BooksControllerTests 
     {
-        public BooksControllerTests()
+        [Fact]
+        public async Task ShouldGetBooks()
         {
+            await using var application = new ApiControllerTestBase();
+            using (var scope = application.Services.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+                using (var dbContext = provider.GetRequiredService<ApplicationDbContext>())
+                {
+                    await dbContext.Database.EnsureCreatedAsync(); 
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+
+            var client = application.CreateClient();
+            var response = await client.GetAsync($"/Books");
+
+            response.EnsureSuccessStatusCode();
         }
+    
 
         [Fact]
         public async Task ShouldCreateBook()
         {
-            await using var dbContext = await CreateDatabase();
-            var books = dbContext.Set<Book>().FirstOrDefault();
-            var client = CreateClient();
+            await using var application = new ApiControllerTestBase();
+
+            using (var scope = application.Services.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+                using (var dbContext = provider.GetRequiredService<ApplicationDbContext>())
+                {
+                    await dbContext.Database.EnsureCreatedAsync();
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+
+            var client = application.CreateClient();
             var data = new
             {
                 Author = "Author",
