@@ -7,12 +7,6 @@
     {
         public class Command : IRequest<Response>
         {
-            public Command(int? id)
-            {
-                Id = id;
-            }
-
-            public int? Id { get; set; }
         }
 
         public class Response
@@ -37,11 +31,6 @@
             public Task<Response> Handle(Command request, CancellationToken cancellationToken)
             {
                 var query = db.Set<Book>().AsQueryable();
-                if (request.Id is object)
-                {
-                    query = query.Where(x => x.Id == request.Id);
-                }
-
                 var books = query.ToList();
                 return Task.FromResult(new Response(books));
             }

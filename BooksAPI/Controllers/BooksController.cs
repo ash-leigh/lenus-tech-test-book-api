@@ -33,7 +33,7 @@ namespace BooksAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Get.Response>> Get(CancellationToken cancellationToken)
         {
-            return await mediator.Send(new Get.Command(null), cancellationToken);
+            return await mediator.Send(new Get.Command(), cancellationToken);
         }
 
 
@@ -53,9 +53,9 @@ namespace BooksAPI.Controllers
         [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Get.Response>> GetById(int id, CancellationToken cancellationToken)
+        public async Task<ActionResult<GetById.Response>> GetById(int id, CancellationToken cancellationToken)
         {
-            return await mediator.Send(new Get.Command(id), cancellationToken);
+            return await mediator.Send(new GetById.Command(id), cancellationToken);
         }
 
         [HttpDelete]

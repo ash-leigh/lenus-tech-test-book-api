@@ -2,6 +2,7 @@
 {
     using BooksAPI.Data;
     using BooksAPI.Data.Domain;
+    using BooksAPI.Features;
     using FluentAssertions;
     using Microsoft.Extensions.DependencyInjection;
     using System.Collections.Generic;
@@ -106,9 +107,9 @@
                     var client = application.CreateClient();
                     var response = await client.GetAsync($"/Books");
                     var responseString = await response.Content.ReadAsStringAsync();
-                    var deseralizedResponse = JsonSerializer.Deserialize<List<Book>>(responseString);
+                    var deseralizedResponse = JsonSerializer.Deserialize<Get.Response>(responseString);
 
-                    deseralizedResponse!.Count().Should().Be(3);
+                    deseralizedResponse!.Books.Count().Should().Be(3);
                     response.EnsureSuccessStatusCode();
                 }
             }            
@@ -198,6 +199,85 @@
                     var request = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = await client.PutAsync($"/Books/{100}", request);
 
+                    response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetBookById_Success_ShouldGetBook_And_Return200()
+        {
+            await using var application = new ApiControllerTestBase();
+            using (var scope = application.Services.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+                using (var dbContext = provider.GetRequiredService<ApplicationDbContext>())
+                {
+                    await dbContext.Database.EnsureCreatedAsync();
+                    await dbContext.SaveChangesAsync();
+
+                    var client = application.CreateClient();
+                    var response = await client.GetAsync($"/Books/{1}");
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var deseralizedResponse = JsonSerializer.Deserialize<Book>(responseString);
+
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetBookById_BookNotFound_ShouldReturn404()
+        {
+            await using var application = new ApiControllerTestBase();
+            using (var scope = application.Services.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+                using (var dbContext = provider.GetRequiredService<ApplicationDbContext>())
+                {
+                    await dbContext.Database.EnsureCreatedAsync();
+                    await dbContext.SaveChangesAsync();
+
+                    var client = application.CreateClient();
+                    var response = await client.GetAsync($"/Books/{100}");
+                    response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task DeleteBook_Success_ShouldDeleteBook_And_Return200()
+        {
+            await using var application = new ApiControllerTestBase();
+            using (var scope = application.Services.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+                using (var dbContext = provider.GetRequiredService<ApplicationDbContext>())
+                {
+                    await dbContext.Database.EnsureCreatedAsync();
+                    await dbContext.SaveChangesAsync();
+
+                    var client = application.CreateClient();
+                    var response = await client.DeleteAsync($"/Books/{1}");
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+        }
+
+        [Fact]
+        public async Task DeleteBook_BookNotFound_ShouldReturn404()
+        {
+            await using var application = new ApiControllerTestBase();
+            using (var scope = application.Services.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+                using (var dbContext = provider.GetRequiredService<ApplicationDbContext>())
+                {
+                    await dbContext.Database.EnsureCreatedAsync();
+                    await dbContext.SaveChangesAsync();
+
+                    var client = application.CreateClient();
+                    var response = await client.DeleteAsync($"/Books/{100}");
                     response.StatusCode.Should().Be(HttpStatusCode.NotFound);
                 }
             }
